@@ -7,6 +7,7 @@ To do before runing:
 
 - Install Ripser
 	> pip install Cython
+	
 	> pip install Ripser
 
 - Before executing, you have to run:
