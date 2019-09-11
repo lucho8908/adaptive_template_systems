@@ -24,36 +24,29 @@ import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=2)
 
-# ------------------------------ Teaspoon data generation  --------------------
-#-------------Circles and Annuli---------------------------------------#
+
 def Circle(N = 100, r=1, gamma=None, seed = None):
-	"""
+	'''
 	Generate N points in R^2 from the circle centered
 	at the origin with radius r.
 
-	If `gamma` is not `None`, then we add noise
-	using a normal distribution.  Note that this means the resulting
-	distribution is not bounded, so your favorite stability theorem doesn't
-	immediately apply.
+	If gamma != None, then we add normal noise in the normal direction with std dev gamma.
 
-	Parameters
-	----------
-	N -
-		Number of points to generate
-	r -
-		Radius of the circle
-	gamma -
-		Standard deviation of the normally distributed noise. 
-	seed -
-		Fixes the seed.  Good if we want to replicate results.
+	:param N: Number of points to generate
+	:type N: int
+	
+	:param r: Radius of the circle
+	:type r: float
 
+	:param gamma: Stan dard deviation of the normally distributed noise. 
+	:type gamma: float or 'None'
 
-	Returns
-	-------
-	P -
-		A Nx2 numpy array with the points drawn as the rows.
+	:param seed: Fixes the seed.  Good if we want to replicate results.
+	:type seed: float or 'None'
 
-	"""
+	:return: numpy 2D array -- A Nx2 numpy array with the points drawn as the rows.
+
+	'''
 	np.random.seed(seed)
 	theta = np.random.rand(N,1)
 	theta = theta.reshape((N,))
@@ -63,7 +56,6 @@ def Circle(N = 100, r=1, gamma=None, seed = None):
 	P[:,1] = r*np.sin(2*np.pi*theta)
 
 	if gamma is not None:
-		# better be a number of some type!
 		noise = np.random.normal(0, gamma, size=(N,2))
 		P += noise
 
@@ -71,63 +63,55 @@ def Circle(N = 100, r=1, gamma=None, seed = None):
 
 
 def Sphere(N = 100, r = 1, noise = 0, seed = None):
-	"""
+	'''
 	Generate N points in R^3 from the sphere centered
 	at the origin with radius r.
 	If noise is set to a positive number, the points
 	can be at distance r +/- noise from the origin.
 
-	Parameters
-	----------
-	N -
-		Number of points to generate
-	r -
-		Radius of the sphere
-	seed -
-		Fixes the seed.  Good if we want to replicate results.
+	:param N: Number of points to generate
+	:type N: int
 
+	:param r: Radius of the sphere
+	:type r: float
 
-	Returns
-	-------
-	P -
-		A Nx3 numpy array with the points drawn as the rows.
+	:param seed: Fixes the seed.  Good if we want to replicate results.
+	:type seed: float
 
-	"""
+	:return: Numpy 2D array -- A Nx3 numpy array with the points drawn as the rows.
+
+	'''
 	np.random.seed(seed)
 
-	Rvect = 2*noise*np.random.random(N) + r
-	thetaVect =   np.pi * np.random.random(N)
-	phiVect = 2 * np.pi * np.random.random(N)
+	R = 2*noise*np.random.random(N) + r
+	theta =   np.pi * np.random.random(N)
+	phi = 2 * np.pi * np.random.random(N)
 
 	P = np.zeros((N,3))
-	P[:,0] = Rvect * np.sin(thetaVect) * np.cos(phiVect)
-	P[:,1] = Rvect * np.sin(thetaVect) * np.sin(phiVect)
-	P[:,2] = Rvect * np.cos(thetaVect)
+	P[:,0] = R * np.sin(theta) * np.cos(phi)
+	P[:,1] = R * np.sin(theta) * np.sin(phi)
+	P[:,2] = R * np.cos(theta)
 
 	return P
-
 
 def Annulus(N=200,r=1,R=2, seed = None):
 	'''
 	Returns point cloud sampled from uniform distribution on
 	annulus in R^2 of inner radius r and outer radius R
 
-	Parameters
-	----------
-	N -
-		Number of points to generate
-	r -
-		Inner radius of the annulus
-	R -
-		Outer radius of the annulus
-	seed -
-		Fixes the seed.  Good if we want to replicate results.
+	:param N: Number of points to generate
+	:type N: int
 
+	:param r: Inner radius of the annulus
+	:type r: float
 
-	Returns
-	-------
-	P -
-		A Nx2 numpy array with the points drawn as the rows.
+	:param R: Outer radius of the annulus
+	:type R: float
+
+	:param seed: Fixes the seed.  Good if we want to replicate results.
+	:type seed: float
+
+	:return: Numpy 2D array -- A Nx2 numpy array with the points drawn as the rows.
 
 	'''
 	np.random.seed(seed)
@@ -146,43 +130,26 @@ def Annulus(N=200,r=1,R=2, seed = None):
 	return P[:N,:]
 
 
-#-------------Torus a la Diaconis paper--------------------------------#
-
 def Torus(N = 100, r = 1,R = 2,  seed = None):
 	'''
-	Sampling method taken from Sampling from a Manifold by Diaconis,
-	Holmes and Shahshahani, arXiv:1206.6913
-
 	Generates torus with points
 	x = ( R + r*cos(theta) ) * cos(psi),
 	y = ( R + r*cos(theta) ) * sin(psi),
 	z = r * sin(theta)
 
-	Need to draw theta with distribution
+	:param N: Number of points to generate
+	:type N: int
 
-	g(theta) = (1+ r*cos(theta)/R ) / (2pi) on 0 <= theta < 2pi
+	:param r: Inner radius of the torus
+	:type r: float
 
-	and psi with uniform density on [0,2pi).
+	:param R: Outer radius of the torus
+	:type R: float
 
-	For theta, draw theta uniformly from [0,2pi) and
-	eta from [1-r/R,1+r/R].  If eta< 1 + (r/R) cos(theta), return theta.
+	:param seed: Fixes the seed.  Good if we want to replicate results.
+	:type seed: float
 
-	Parameters
-	----------
-	N -
-		Number of points to generate
-	r -
-		Inner radius of the torus
-	R -
-		Outer radius of the torus
-	seed -
-		Fixes the seed.  Good if we want to replicate results.
-
-
-	Returns
-	-------
-	P -
-		A Nx3 numpy array with the points drawn as the rows.
+	:return: numpy 2D array -- A Nx3 numpy array with the points drawn as the rows.
 
 	'''
 
@@ -221,32 +188,22 @@ def Torus(N = 100, r = 1,R = 2,  seed = None):
 
 	return P
 
-
-
-
-#----------------------------------------------------------------------#
-
 def Cube(N = 100, diam = 1, dim = 2, seed = None):
-	"""
-	Generate N points in R^dim from the box
-	[0,diam]x[0,diam]x...x[0,diam]
+	'''
+	Generate N points in the box [0,diam]x[0,diam]x...x[0,diam]
 
-	Parameters
-	----------
-	N -
-		Number of points to generate
-	diam -
-		Points are pulled from the box
-		[0,diam]x[0,diam]x...x[0,diam]
-	dim -
-		Points are embedded in R^dim
+	:param N: Number of points to generate
+	:type N: int
 
-	Returns
-	-------
-	P -
-		A Nxdim numpy array with the points drawn as the rows.
+	:param diam: lenght of one side of the box
+	:type diam: float
 
-	"""
+	:param dim: Dimension of the box; point are embbeded in R^dim
+	:type dim: int
+
+	:return: numpy array -- A Nxdim numpy array with the points drawn as the rows.
+
+	'''
 	np.random.seed(seed)
 
 	P = diam*np.random.random((N,dim))
@@ -254,40 +211,25 @@ def Cube(N = 100, diam = 1, dim = 2, seed = None):
 	return P
 
 
+def Clusters(N = 100, centers = np.array(((0,0),(3,3))), sd = 1, seed = None):
+	'''
+	Generate k clusters of points, `N` points in total. k is the number of centers.
 
-#----------------------------------------------------------------------#
+	:param N: Number of points to be generated
+	:type N: int 
 
-def Clusters(N = 100,
-			centers = np.array(((0,0),(3,3))),
-			sd = 1,
-			seed = None):
-	"""
-	Generate k clusters of points, N points in total (evenly divided?)
-	centers is a k x d numpy array, where centers[i,:] is the center of
-	the ith cluster in R^d.
-	Points are drawn from a normal distribution with std dev = sd
+	:param centers: k x d numpy array, where centers[i,:] is the center of the ith cluster in R^d.
+	:type centers: numpy array
 
-	Parameters
-	----------
-	N -
-		Number of points to be generated
-	centers -
-		k x d numpy array, where centers[i,:] is the center of
-		the ith cluster in R^d.
+	:param sd: standard deviation of clusters.
+	:type sd: numpy array
 
-	sd -
-		standard deviation of clusters.
-		TODO: Make this enterable as a vector so each cluster can have
-		a different sd?
-	seed -
-		Fixes the seed.  Good if we want to replicate results.
+	:param seed: Fixes the seed.
+	:type seed: float
 
-	Returns
-	-------
-	P -
-		A Nxd numpy array with the points drawn as the rows.
+	:return: numpy array -- A Nxd numpy array with the points drawn as the rows.
 
-	"""
+	'''
 
 	np.random.seed(seed)
 
@@ -318,16 +260,35 @@ def Clusters(N = 100,
 
 	return P
 
-# ---------------------------------------------------------------------------------
 
-def testSetManifolds(numDgms = 50,
-						numPts = 300,
-						permute = True,
-						seed = None
-						):
+def testSetManifolds(numDgms = 50, numPts = 300, permute = True, seed = None):
+	'''
+	This function generates persisten diaglams from point clouds generated from the following collection of manifolds
 
+		- Torus
+		- Annulus
+		- Cube
+		- 3 clusters
+		- 3 clusters of 3 clusters
+		- Sphere
 
+	The diagrmas are obtained by computing persistent homology (using Ripser) of sampled point clouds from the described manifolds.
 
+	:param numDgms: Number of diagrmas per manifold
+	:type numDgms: int
+
+	:param numPts: Number of point per sampled point cloud
+	:type numPts: int
+
+	:param permute: If True it will permute the final result, so that diagrams of point clouds sampled from the samw manifold are not contiguous.
+	:type permute: bool
+
+	:param seed: Fixes the random seed.
+	:type seed: float
+
+	:return: pandas data frame -- Each row corersponds to the 0- and 1-dimensional persistent homology of a point cloud sampled from one of the 6 manifolds.
+	'''
+	
 	columns = ['Dgm0', 'Dgm1', 'trainingLabel']
 	index = range(6*numDgms)
 	DgmsDF = pd.DataFrame(columns = columns, index = index)
@@ -363,24 +324,18 @@ def testSetManifolds(numDgms = 50,
 		if fixSeed:
 			seed += 1
 		dgmOut = ripser(Cube(N=numPts,seed = seed))['dgms']
-		# Dgms.append([dgmOut[0],dgmOut[1]])
 		DgmsDF.loc[counter] = [dgmOut[0],dgmOut[1], 'Cube']
 		counter +=1
 
 	#-
 	print('Generating three cluster clouds...')
-	# Centered at (0,0), (0,5), and (5,0) with sd =1
-	# Then scaled by .3 to make birth/death times closer to the other examples
 	centers = np.array( [ [0,0], [0,2], [2,0]  ])
-	# centers = np.array( [ [0,0], [0,2], [2,0]  ])
 	for i in range(numDgms):
 		if fixSeed:
 			seed += 1
 		dgmOut = ripser(Clusters(centers=centers, N = numPts, seed = seed, sd = .05))['dgms']
 		DgmsDF.loc[counter] = [dgmOut[0],dgmOut[1], '3Cluster']
 		counter +=1
-
-
 
 	#-
 	print('Generating three clusters of three clusters clouds...')
@@ -397,11 +352,8 @@ def testSetManifolds(numDgms = 50,
 										N = numPts,
 										sd = .05,
 										seed = seed))['dgms']
-		# Dgms.append([dgmOut[0],dgmOut[1]])
 		DgmsDF.loc[counter] = [dgmOut[0],dgmOut[1], '3Clusters of 3Clusters']
 		counter +=1
-
-
 
 	#-
 	print('Generating sphere clouds...')
@@ -419,12 +371,20 @@ def testSetManifolds(numDgms = 50,
 	if permute:
 		DgmsDF = DgmsDF.reindex(np.random.permutation(DgmsDF.index))
 
-
 	return DgmsDF
 
 # ------------------------------ My feature functions -------------------------
 
 def limits_box(list_dgms):
+	'''
+	This function computes the min and max of a collection of pers. dgms. in the birth-lifespan space.
+	
+	:param list_dgms: List of persistent diagrmas
+	:type list_dgms: list
+
+	:return: list -- mins = [min_birth, min_lifespan] and maxs = [max_birth, max_lifespan]
+	'''
+
 	list_dgms_temp = deepcopy(list_dgms)
 	mins = np.inf*np.ones(2)
 	maxs = -np.inf*np.ones(2)
@@ -437,6 +397,21 @@ def limits_box(list_dgms):
 	return mins, maxs
 
 def box_centers(list_dgms, d, padding):
+	'''
+	This function computes the collection of centers use to define tent functions, as well as the size the tent.
+
+	:param list_dgms: List of persistent diagrmas
+	:type list_dgms: list
+
+	:param d: number of a bins in each axis.
+	:type d: int
+
+	:param padding: this increases the size of the box aournd the collection of persistent diagrmas
+	:type padding: float
+
+	:return: numpy array, float -- d x 2 array of centers, size of the tent domain
+	'''
+
 	minimums, maximums = limits_box(list_dgms)
 	birth_min = minimums[0] - padding
 	lifespan_min = minimums[1] - padding
@@ -449,9 +424,6 @@ def box_centers(list_dgms, d, padding):
 	birth_coord = []
 	lifespan_coord = []
 	for i in range(1,d):
-		# birth_coord.append(birth_min + birth_step*i + birth_step/2)
-		# lifespan_coord.append(lifespan_min + lifespan_step*i + lifespan_step/2)
-
 		birth_coord.append(birth_min + birth_step*i)
 		lifespan_coord.append(lifespan_min + lifespan_step*i)
 
@@ -463,32 +435,96 @@ def box_centers(list_dgms, d, padding):
 	return np.column_stack((x,y)), max(birth_step, lifespan_step)
 
 def f_box(x, center, delta):
+	'''
+	Computes the function
+
+	.. math::
+		g_{(a,b), \delta}(x) = \max \\left\{ 0,1 - \\frac{1}{\delta} \max\\left\{ | x-a | , | y-b | \\right\} \\right\}
+
+	:param x: point to evaluate the function :math:`g_{(a,b), \delta}`.
+	:type x: numpy array
+
+	:param center: Center of the tenf function.
+	:type center: numpy array
+
+	:param delta: size fo the tent function domain.
+	:type delta: float
+
+	:return: float -- tent function :math:`g_{(a,b), \delta}(x)` evaluated at `x`.
+
+	'''
 	x = deepcopy(x)
 	x[1] = x[1] - x[0] # Change death to lifespan.
 	return max(0, 1 - (1/delta)*max(abs(x[0] - center[0]), abs(x[1] - center[1])))
 
 def f_ellipse (x, center=np.array([0,0]), axis=np.array([1,1]), rotation=np.array([[1,0],[0,1]])):
-	# point_centered = np.reshape(x - center, (-1,1))
-	# point_rotated = np.transpose(rotation)@point_centered
+	'''
+	Computes a bump function centered with an ellipsoidal domain centered ac `c`, rotaded by 'rotation' and with axis given by 'axis'. The bump function is computed using the gollowing formula 
+
+	.. math::
+		f_{A,c} (x) = \max \\left\{ 0, 1 - (x - c)^T A (x - c)\\right\}
+
+	:param x: point to avelatuate the function :math:`f_{A,c}`
+	:type z: Numpy array
+
+	:param center: center of the ellipse
+	:type center: Numpy array
+
+	:param axis: Size f themjor an minor axis of the ellipse
+	:type axis: Numpy array
+
+	:param rotation: Rotation matrix for the ellipse
+	:type rotation: Numpy array
+
+	:return: float -- value of :math:`f_{A,c} (x)`.
+	'''
 	sigma = np.diag(np.power(axis, -2))
-	# temp = point_rotated.transpose()@sigma@point_rotated
-
 	x_centered = np.subtract(x, center)
-
 	temp = x_centered@rotation@sigma@np.transpose(rotation)@np.transpose(x_centered)
 	temp = np.diag(temp)
 
 	return np.maximum(0, 1-temp)
 
 def f_gaussian(x, mean, std):
+	'''
+	Computes
+
+	.. math::
+		g(x) = \\frac{1}{\sigma \sqrt{2\pi}} e^{- \\left( \\frac{x-\mu}{\sqrt{2}\sigma} \\right)^2}
+	
+	:param x: point to evaluate :math:`g` at
+	:type x: numpy array
+
+	:param mean: center of the gaussian
+	:type mean: float
+
+	:param std: standard deviation
+	:type std: float
+
+	:return: numpy array -- :math:`g(x)`.
+	'''
 
 	return np.exp((-0.5)*np.power((x-mean)/std, 2)) / (std*np.sqrt(2*np.pi))
 
 #@jit(parallel=True)
 def f_dgm(dgm, function, **keyargs):
-	# total = 0
-	# for i in range(len(dgm)):
-	# 	total += function(dgm[i,:], **keyargs)
+	'''
+	Given a persistend diagram :math:`D = (S,\mu)` and a compactly supported function in :math:`\mathbb{R}^2`, this function computes
+
+	.. math::
+		\\nu_{D}(f) = \sum_{x\in S} f(x)\mu(x)
+
+	:param dgm: persistent diagram, array of points in :math:`\mathbb{R}^2`.
+	:type dgm: Numpy array
+
+	:param function: Compactly supported function in :math:`\mathbb{R}^2`.
+	:type function: function
+
+	:param keyargs: Additional arguments required by `funciton`
+	:type keyargs: Dicctionary
+
+	:return: float -- value of :math:`\\nu_{D}(f)`.
+	'''
 
 	temp = function(dgm, **keyargs)
 
@@ -496,6 +532,20 @@ def f_dgm(dgm, function, **keyargs):
 
 #@jit(parallel=True)
 def feature(list_dgms, function, **keyargs):
+	'''
+	Given a collection of persistent diagrams and a compactly supported function in :math:`\mathbb{R}^2`, computes :math:`\\nu_{D}(f)` for each diagram :math:`D` in the collection.
+
+	:param list_dgms: list of persistent diagrams
+	:type list_dgms: list
+
+	:param function: Compactly supported function in :math:`\mathbb{R}^2`.
+	:type function: function
+
+	:param keyargs: Additional arguments required by `funciton`
+	:type keyargs: Dicctionary
+
+	:return: Numpy array -- Array of values :math:`\\nu_{D}(f)` for each diagram :math:`D` in the collection `list_dgms`.
+	'''
 	num_diagrams = len(list_dgms)
 
 	feat = np.zeros(num_diagrams)
