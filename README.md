@@ -6,10 +6,11 @@ Requires:
 To do before runing:
 
 - Install Ripser
-	> pip install Cython
+	~~~
+	pip install Cython
+	pip install Ripser
+	~~~
 	
-	> pip install Ripser
-
 - Before executing, you have to run:
 	1.	conda create --name gda_env --file gda-public-master/requirements.txt python=3
 	2.	source activate gda_env
