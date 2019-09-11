@@ -10,11 +10,20 @@ To do before runing:
 	pip install Cython
 	pip install Ripser
 	~~~
-	
-- Before executing, you have to run:
-	1.	conda create --name gda_env --file gda-public-master/requirements.txt python=3
-	2.	source activate gda_env
-	3.	pip install gda-public-master
+
+- Install: First you need to clone the fllowing repository https://github.com/geomdata/gda-public/
+
+	~~~	 
+	cd ~ #Any forlder diferent to the one where gda-public was clones!
+	conda create --name gda_env --file /path_of_cloned_repo/gda-public/requirements.txt python=3
+	source activate gda_env
+	pip install /path_of_cloned_repo/gda-public
+	~~~
+
+	To verify the installation, open a python worksheet and do
+	~~~
+	import multidim
+	~~~
 
 - If the previous steps where previously executed we only need to run: source activate gda_env
 
