@@ -32,7 +32,7 @@
 	import multidim
 	~~~
 
-- If the previous steps where previously executed, the next time you only need to run
+	If the previous steps where previously executed, the next time you only need to run
 	~~~
 	source activate gda_env
 	~~~
