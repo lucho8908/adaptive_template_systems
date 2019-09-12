@@ -3,14 +3,12 @@ import multidim
 import itertools
 import os
 import hdbscan
-import teaspoon
 import sys
 import time
 import pandas as pd
 import itertools
 import pickle
 
-from teaspoon.MakeData import PointCloud
 from copy import deepcopy
 from matplotlib.patches import Ellipse
 from ripser import ripser
@@ -29,7 +27,8 @@ import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=2)
 
-from approximation import *
+sys.path.append('../..')
+from ATS import *
 
 # -----------------------------------------------------------------------------
 # -------------- ARGUMENTS ----------------------------------------------------
@@ -295,10 +294,10 @@ for k in range(55):
 
 			F_test_predicted = ridge_model.predict(X_test_features_transformed)
 			
-			# score_train[position_constant, position_degree] = ridge_model.score(X_train_features_transformed, F_train)
 			score_train[position_constant, position_degree] = sum(F_train_predicted==F_train)/len(F_train_predicted)
-			# score_test[position_constant, position_degree] = ridge_model.score(X_test_features_transformed, F_test)
+			
 			score_test[position_constant, position_degree] = sum(F_test_predicted==F_test)/len(F_test_predicted)
+			
 			position_degree += 1
 
 		position_constant +=1

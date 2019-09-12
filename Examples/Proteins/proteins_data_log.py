@@ -3,14 +3,12 @@ import multidim
 import itertools
 import os
 import hdbscan
-import teaspoon
 import sys
 import time
 import pandas as pd
 import itertools
 import pickle
 
-from teaspoon.MakeData import PointCloud
 from copy import deepcopy
 from matplotlib.patches import Ellipse
 from ripser import ripser
@@ -30,7 +28,8 @@ import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=2)
 
-from approximation import *
+sys.path.append('../..')
+from ATS import *
 
 # -----------------------------------------------------------------------------
 # -------------- ARGUMENTS ----------------------------------------------------

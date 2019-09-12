@@ -3,7 +3,6 @@ import os
 import sys
 import pickle
 
-
 from ripser import ripser
 from persim import plot_diagrams
 
