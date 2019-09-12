@@ -2,8 +2,13 @@ Requirments:
 	- Python/3.3. or higher
 	- GNU/4.7.1 or higher to run RIPSER
 	- GDA Toolbox package: https://github.com/geomdata/gda-public/
+	- Ripser
+	- Keras
+	- Theano
+	- Numba
+	- hdbscan
 
-To do before runing:
+To do before running:
 
 - Install Ripser
 	~~~
@@ -11,10 +16,10 @@ To do before runing:
 	pip install Ripser
 	~~~
 
-- Install: First you need to clone the fllowing repository https://github.com/geomdata/gda-public/
+- Install GDA Toolbox: First you need to clone the following repository https://github.com/geomdata/gda-public/
 
 	~~~	 
-	cd ~ #Any forlder diferent to the one where gda-public was clones!
+	cd ~ #Any folder different to the one where gda-public was clones!
 	conda create --name gda_env --file /path_of_cloned_repo/gda-public/requirements.txt python=3
 	source activate gda_env
 	pip install /path_of_cloned_repo/gda-public
@@ -30,15 +35,14 @@ To do before runing:
 	source activate gda_env
 	~~~
 
-- Isntall Keras+Theano:
+- Install Keras+Theano:
 	~~~
 	pip install theano
 	pip install keras
 	~~~
 
-- Requires hdbscan, ripser and numba:
-
-	1.	conda install -y -c conda-forge hdbscan
-	2.	pip install ripser
-	2.	pip install numba
-
+- Install numba and hdbscan
+	~~~
+	conda install -y -c conda-forge hdbscan
+	pip install numba
+	~~~
