@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ATS module &mdash; Adaptive Template System 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Adaptive Template System
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ATS module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Adaptive Template System</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ATS module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ATS.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ATS">
+<span id="ats-module"></span><h1>ATS module<a class="headerlink" href="#module-ATS" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="ATS.Annulus">
+<code class="descclassname">ATS.</code><code class="descname">Annulus</code><span class="sig-paren">(</span><em>N=200</em>, <em>r=1</em>, <em>R=2</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#Annulus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.Annulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns point cloud sampled from uniform distribution on
+annulus in R^2 of inner radius r and outer radius R</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> (<em>int</em>) – Number of points to generate</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – Inner radius of the annulus</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – Outer radius of the annulus</p></li>
+<li><p><strong>seed</strong> (<em>float</em>) – Fixes the seed.  Good if we want to replicate results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy 2D array – A Nx2 numpy array with the points drawn as the rows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.Circle">
+<code class="descclassname">ATS.</code><code class="descname">Circle</code><span class="sig-paren">(</span><em>N=100</em>, <em>r=1</em>, <em>gamma=None</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.Circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate N points in R^2 from the circle centered
+at the origin with radius r.</p>
+<p>If gamma != None, then we add normal noise in the normal direction with std dev gamma.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> (<em>int</em>) – Number of points to generate</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – Radius of the circle</p></li>
+<li><p><strong>gamma</strong> (<em>float</em><em> or </em><em>'None'</em>) – Stan dard deviation of the normally distributed noise.</p></li>
+<li><p><strong>seed</strong> (<em>float</em><em> or </em><em>'None'</em>) – Fixes the seed.  Good if we want to replicate results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy 2D array – A Nx2 numpy array with the points drawn as the rows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.Clusters">
+<code class="descclassname">ATS.</code><code class="descname">Clusters</code><span class="sig-paren">(</span><em>N=100, centers=array([[0, 0],        [3, 3]]), sd=1, seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#Clusters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.Clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate k clusters of points, <cite>N</cite> points in total. k is the number of centers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> (<em>int</em>) – Number of points to be generated</p></li>
+<li><p><strong>centers</strong> (<em>numpy array</em>) – k x d numpy array, where centers[i,:] is the center of the ith cluster in R^d.</p></li>
+<li><p><strong>sd</strong> (<em>numpy array</em>) – standard deviation of clusters.</p></li>
+<li><p><strong>seed</strong> (<em>float</em>) – Fixes the seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array – A Nxd numpy array with the points drawn as the rows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.Cube">
+<code class="descclassname">ATS.</code><code class="descname">Cube</code><span class="sig-paren">(</span><em>N=100</em>, <em>diam=1</em>, <em>dim=2</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#Cube"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.Cube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate N points in the box [0,diam]x[0,diam]x…x[0,diam]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> (<em>int</em>) – Number of points to generate</p></li>
+<li><p><strong>diam</strong> (<em>float</em>) – lenght of one side of the box</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Dimension of the box; point are embbeded in R^dim</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array – A Nxdim numpy array with the points drawn as the rows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.Sphere">
+<code class="descclassname">ATS.</code><code class="descname">Sphere</code><span class="sig-paren">(</span><em>N=100</em>, <em>r=1</em>, <em>noise=0</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#Sphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.Sphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate N points in R^3 from the sphere centered
+at the origin with radius r.
+If noise is set to a positive number, the points
+can be at distance r +/- noise from the origin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> (<em>int</em>) – Number of points to generate</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – Radius of the sphere</p></li>
+<li><p><strong>seed</strong> (<em>float</em>) – Fixes the seed.  Good if we want to replicate results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy 2D array – A Nx3 numpy array with the points drawn as the rows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.Torus">
+<code class="descclassname">ATS.</code><code class="descname">Torus</code><span class="sig-paren">(</span><em>N=100</em>, <em>r=1</em>, <em>R=2</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#Torus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.Torus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates torus with points
+x = ( R + r*cos(theta) ) * cos(psi),
+y = ( R + r*cos(theta) ) * sin(psi),
+z = r * sin(theta)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N</strong> (<em>int</em>) – Number of points to generate</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – Inner radius of the torus</p></li>
+<li><p><strong>R</strong> (<em>float</em>) – Outer radius of the torus</p></li>
+<li><p><strong>seed</strong> (<em>float</em>) – Fixes the seed.  Good if we want to replicate results.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy 2D array – A Nx3 numpy array with the points drawn as the rows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.box_centers">
+<code class="descclassname">ATS.</code><code class="descname">box_centers</code><span class="sig-paren">(</span><em>list_dgms</em>, <em>d</em>, <em>padding</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#box_centers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.box_centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the collection of centers use to define tent functions, as well as the size the tent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_dgms</strong> (<em>list</em>) – List of persistent diagrmas</p></li>
+<li><p><strong>d</strong> (<em>int</em>) – number of a bins in each axis.</p></li>
+<li><p><strong>padding</strong> (<em>float</em>) – this increases the size of the box aournd the collection of persistent diagrmas</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array, float – d x 2 array of centers, size of the tent domain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.f_box">
+<code class="descclassname">ATS.</code><code class="descname">f_box</code><span class="sig-paren">(</span><em>x</em>, <em>center</em>, <em>delta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#f_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.f_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the function</p>
+<div class="math notranslate nohighlight">
+\[g_{(a,b), \delta}(x) = \max \left\{ 0,1 - \frac{1}{\delta} \max\left\{ | x-a | , | y-b | \right\} \right\}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – point to evaluate the function <span class="math notranslate nohighlight">\(g_{(a,b), \delta}\)</span>.</p></li>
+<li><p><strong>center</strong> (<em>numpy array</em>) – Center of the tenf function.</p></li>
+<li><p><strong>delta</strong> (<em>float</em>) – size fo the tent function domain.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float – tent function <span class="math notranslate nohighlight">\(g_{(a,b), \delta}(x)\)</span> evaluated at <cite>x</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.f_dgm">
+<code class="descclassname">ATS.</code><code class="descname">f_dgm</code><span class="sig-paren">(</span><em>dgm</em>, <em>function</em>, <em>**keyargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#f_dgm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.f_dgm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a persistend diagram <span class="math notranslate nohighlight">\(D = (S,\mu)\)</span> and a compactly supported function in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>, this function computes</p>
+<div class="math notranslate nohighlight">
+\[\nu_{D}(f) = \sum_{x\in S} f(x)\mu(x)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dgm</strong> (<em>Numpy array</em>) – persistent diagram, array of points in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>.</p></li>
+<li><p><strong>function</strong> (<em>function</em>) – Compactly supported function in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>.</p></li>
+<li><p><strong>keyargs</strong> (<em>Dicctionary</em>) – Additional arguments required by <cite>funciton</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float – value of <span class="math notranslate nohighlight">\(\nu_{D}(f)\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.f_ellipse">
+<code class="descclassname">ATS.</code><code class="descname">f_ellipse</code><span class="sig-paren">(</span><em>x, center=array([0, 0]), axis=array([1, 1]), rotation=array([[1, 0],        [0, 1]])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#f_ellipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.f_ellipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a bump function centered with an ellipsoidal domain centered ac <cite>c</cite>, rotaded by ‘rotation’ and with axis given by ‘axis’. The bump function is computed using the gollowing formula</p>
+<div class="math notranslate nohighlight">
+\[f_{A,c} (x) = \max \left\{ 0, 1 - (x - c)^T A (x - c)\right\}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – point to avelatuate the function <span class="math notranslate nohighlight">\(f_{A,c}\)</span></p></li>
+<li><p><strong>center</strong> (<em>Numpy array</em>) – center of the ellipse</p></li>
+<li><p><strong>axis</strong> (<em>Numpy array</em>) – Size f themjor an minor axis of the ellipse</p></li>
+<li><p><strong>rotation</strong> (<em>Numpy array</em>) – Rotation matrix for the ellipse</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float – value of <span class="math notranslate nohighlight">\(f_{A,c} (x)\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.f_gaussian">
+<code class="descclassname">ATS.</code><code class="descname">f_gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>mean</em>, <em>std</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#f_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.f_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes</p>
+<div class="math notranslate nohighlight">
+\[g(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{- \left( \frac{x-\mu}{\sqrt{2}\sigma} \right)^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – point to evaluate <span class="math notranslate nohighlight">\(g\)</span> at</p></li>
+<li><p><strong>mean</strong> (<em>float</em>) – center of the gaussian</p></li>
+<li><p><strong>std</strong> (<em>float</em>) – standard deviation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array – <span class="math notranslate nohighlight">\(g(x)\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.feature">
+<code class="descclassname">ATS.</code><code class="descname">feature</code><span class="sig-paren">(</span><em>list_dgms</em>, <em>function</em>, <em>**keyargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a collection of persistent diagrams and a compactly supported function in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>, computes <span class="math notranslate nohighlight">\(\nu_{D}(f)\)</span> for each diagram <span class="math notranslate nohighlight">\(D\)</span> in the collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_dgms</strong> (<em>list</em>) – list of persistent diagrams</p></li>
+<li><p><strong>function</strong> (<em>function</em>) – Compactly supported function in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>.</p></li>
+<li><p><strong>keyargs</strong> (<em>Dicctionary</em>) – Additional arguments required by <cite>funciton</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy array – Array of values <span class="math notranslate nohighlight">\(\nu_{D}(f)\)</span> for each diagram <span class="math notranslate nohighlight">\(D\)</span> in the collection <cite>list_dgms</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.limits_box">
+<code class="descclassname">ATS.</code><code class="descname">limits_box</code><span class="sig-paren">(</span><em>list_dgms</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#limits_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.limits_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the min and max of a collection of pers. dgms. in the birth-lifespan space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>list_dgms</strong> (<em>list</em>) – List of persistent diagrmas</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list – mins = [min_birth, min_lifespan] and maxs = [max_birth, max_lifespan]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.testSetManifolds">
+<code class="descclassname">ATS.</code><code class="descname">testSetManifolds</code><span class="sig-paren">(</span><em>numDgms=50</em>, <em>numPts=300</em>, <em>permute=True</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#testSetManifolds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.testSetManifolds" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function generates persisten diaglams from point clouds generated from the following collection of manifolds</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Torus</p></li>
+<li><p>Annulus</p></li>
+<li><p>Cube</p></li>
+<li><p>3 clusters</p></li>
+<li><p>3 clusters of 3 clusters</p></li>
+<li><p>Sphere</p></li>
+</ul>
+</div></blockquote>
+<p>The diagrmas are obtained by computing persistent homology (using Ripser) of sampled point clouds from the described manifolds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numDgms</strong> (<em>int</em>) – Number of diagrmas per manifold</p></li>
+<li><p><strong>numPts</strong> (<em>int</em>) – Number of point per sampled point cloud</p></li>
+<li><p><strong>permute</strong> (<em>bool</em>) – If True it will permute the final result, so that diagrams of point clouds sampled from the samw manifold are not contiguous.</p></li>
+<li><p><strong>seed</strong> (<em>float</em>) – Fixes the random seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pandas data frame – Each row corersponds to the 0- and 1-dimensional persistent homology of a point cloud sampled from one of the 6 manifolds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, LP
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
