@@ -4,11 +4,9 @@ import itertools
 import os
 import time
 import hdbscan
-import teaspoon
 import sys
 import pandas as pd
 
-from teaspoon.MakeData import PointCloud
 from copy import deepcopy
 from matplotlib.patches import Ellipse
 from ripser import ripser
@@ -25,7 +23,8 @@ import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=2)
 
-from approximation import *
+sys.path.append('../..')
+from ATS import *
 
 # ------------------------------ IMPORT DATA ----------------------------------
 
@@ -98,23 +97,6 @@ for n in range(10):
 		ellipses.append(temp)
 	t1 = time.time()
 	print('Finish GMM. Time: {}'.format(t1-t0))
-
-	# for i in range(len(X_train)):
-	# 	dgm = np.array(X_train[i])
-	# 	plt.scatter(dgm[:,0], dgm[:,1], color='grey')
-
-	# ellipses_plot_cder = []
-	# for i in range(len(ellipses)):
-	# 	e = ellipses[i]
-	# 	ellipses_plot_cder.append(Ellipse(xy=e['mean'], width=e['std'][0], height=e['std'][0], angle=np.arccos(e['rotation'][0,0])))
-
-	# for e in ellipses_plot_cder:
-	# 	plt.gca().add_artist(e)
-	# 	e.set_clip_box(plt.gca().bbox)
-	# 	e.set_alpha(0.5)
-	# 	e.set_facecolor([1,0,0])
-	# plt.savefig('gmm_images/{}_h0_cder_n_{}.png'.format(n, num_dgms))
-	# plt.close()
 
 	# ------------------------------ GMM features --------------------------------
 	t0 = time.time()
@@ -221,10 +203,3 @@ for n in range(10):
 	print('Ridge Classification: {}'.format(t1-t0))
 print(np.mean(score_train), np.std(score_train))
 print(np.mean(score_test), np.std(score_test))
-
-sys.exit()
-
-
-# ------------------------------ Gaussian Mixture Model -----------------------
-
-

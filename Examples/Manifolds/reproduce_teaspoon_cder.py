@@ -26,7 +26,6 @@ np.set_printoptions(precision=2)
 sys.path.append('../..')
 from ATS import *
 
-
 # ------------------------------ IMPORT DATA ----------------------------------
 
 num_dgms = int(sys.argv[1])
@@ -99,23 +98,6 @@ for n in range(10):
 	t1 = time.time()
 	print('Finish GMM. Time: {}'.format(t1-t0))
 
-	# for i in range(len(X_train)):
-	# 	dgm = np.array(X_train[i])
-	# 	plt.scatter(dgm[:,0], dgm[:,1], color='grey')
-
-	# ellipses_plot_cder = []
-	# for i in range(len(ellipses)):
-	# 	e = ellipses[i]
-	# 	ellipses_plot_cder.append(Ellipse(xy=e['mean'], width=e['std'][0], height=e['std'][0], angle=np.arccos(e['rotation'][0,0])))
-
-	# for e in ellipses_plot_cder:
-	# 	plt.gca().add_artist(e)
-	# 	e.set_clip_box(plt.gca().bbox)
-	# 	e.set_alpha(0.5)
-	# 	e.set_facecolor([1,0,0])
-	# plt.savefig('gmm_images/{}_h0_cder_n_{}.png'.format(n, num_dgms))
-	# plt.close()
-
 	# ------------------------------ GMM features --------------------------------
 	t0 = time.time()
 	X_train_features_0 = np.zeros((len(X_train), len(ellipses)))
@@ -165,7 +147,6 @@ for n in range(10):
 	for c in cder_result:
 		temp = {key:c[key] for key in ['mean', 'std', 'rotation', 'radius', 'entropy']}
 		temp['std'] = 3*temp['std']
-		#temp['std'] = np.array([temp['radius'], temp['radius']])
 		ellipses.append(temp)
 
 	for i in range(len(X_train)):
@@ -218,73 +199,3 @@ for n in range(10):
 
 print(np.mean(score_train), np.std(score_train))
 print(np.mean(score_test), np.std(score_test))
-
-sys.exit()
-
-
-# ------------------------------ Gaussian Mixture Model -----------------------
-
-
-
-X_train_temp = np.vstack(X_train)
-
-gmm = mixture.BayesianGaussianMixture(n_components=len(ellipses), covariance_type='full', max_iter=int(10e4)).fit(X_train_temp)
-
-
-gmm_ellipses = []
-for i in range(len(gmm.means_)):
-	u,s,v = np.linalg.svd(gmm.covariances_[i])
-	temp = {'mean':gmm.means_[i], 'std':s, 'rotation':v, 'radius':max(s), 'entropy':gmm.weights_[i]}
-	gmm_ellipses.append(temp)
-
-
-# ------------------------------ HDBSCAN --------------------------------------
-
-
-clusterer = hdbscan.HDBSCAN()
-
-clusterer.fit(X_train_temp)
-
-num_clusters = clusterer.labels_.max()
-
-hdbscan_ellipses = []
-for i in range(num_clusters):
-	cluster_i = X_train_temp[clusterer.labels_ == i]
-
-	en = np.mean(clusterer.probabilities_[clusterer.labels_ == i])
-	
-	mean = np.mean(cluster_i, axis=0)
-	cov_matrix = np.cov(cluster_i.transpose())
-
-	u,s,v = np.linalg.svd(cov_matrix, full_matrices=True)
-
-	temp = {'mean':mean, 'std':s, 'rotation':u, 'radius':max(s), 'entropy':en}
-	hdbscan_ellipses.append(temp)
-
-
-
-
-
-
-ellipses_plot_gmm = []
-for i in range(len(gmm_ellipses)):
-	e = gmm_ellipses[i]
-	ellipses_plot_gmm.append(Ellipse(xy=e['mean'], width=e['std'][0], height=e['std'][1], angle=np.arccos(e['rotation'][0,0])))
-
-fig, ax = plt.subplots()
-
-for i in range(len(X_train)):
-	dgm = np.array(X_train[i][:, 0:2])
-	plt.scatter(dgm[:,0], dgm[:,1], color='grey')
-
-
-
-for e in ellipses_plot_gmm:
-	ax.add_artist(e)
-	e.set_clip_box(ax.bbox)
-	e.set_alpha(0.5)
-	e.set_facecolor([0,0,1])
-
-plt.savefig('cder_ellipses.png')
-
-sys.exit()
