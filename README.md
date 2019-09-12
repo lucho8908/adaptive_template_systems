@@ -1,4 +1,4 @@
-Requirments:
+## Requirments:
 * Python/3.3. or higher
 * GNU/4.7.1 or higher to run RIPSER
 * GDA Toolbox package: https://github.com/geomdata/gda-public/
@@ -8,7 +8,7 @@ Requirments:
 * Numba
 * hdbscan
 
-To do before running:
+## Before running:
 
 - Install Ripser
 	~~~
