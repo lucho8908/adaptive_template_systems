@@ -1,6 +1,6 @@
 # Adaptive Template Systems
 
-This repository implements the tools developed in the paper [Approximating Continuous Functions on Persistence Diagrams Using Template Functions](https://arxiv.org/abs/1902.07190)
+This repository implements the tools developed in the paper [Approximating Continuous Functions on Persistence Diagrams Using Template Functions](https://arxiv.org/abs/1902.07190). The main goal of this package is to provide a tool that extract features fro persistent diagrams in an adaptive manner.
 
 ## Requirments:
 * Python/3.3. or higher
@@ -50,3 +50,7 @@ This repository implements the tools developed in the paper [Approximating Conti
 	conda install -y -c conda-forge hdbscan
 	pip install numba
 	~~~
+
+## Running and Examples
+
+In the folder `Examples` 
