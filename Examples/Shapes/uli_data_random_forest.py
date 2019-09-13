@@ -149,9 +149,13 @@ for i in range(1,11):
 	
 		X_train_0, X_test_0, X_train_1, X_test_1, F_train, F_test = train_test_split(X_dgm0, X_dgm1, F, test_size=0.30)
 
+		# -----------------------------------------------------------------------------
 		# ------------------------------ H_0 ------------------------------------------
+		# -----------------------------------------------------------------------------
 
+		# -----------------------------------------------------------------------------
 		# ------------------------------ GMM ------------------------------------------
+		# -----------------------------------------------------------------------------
 
 		print('Begin GMM...')
 		t0 = time.time()
@@ -176,21 +180,16 @@ for i in range(1,11):
 		t1 = time.time()
 		print('Finish GMM. Time: {}'.format(t1-t0))
 
+		# -----------------------------------------------------------------------------
 		# ------------------------------ Features -------------------------------------
+		# -----------------------------------------------------------------------------
 		t0 = time.time()
-		X_train_features_0 = np.zeros((len(X_train_0), len(ellipses)))
-		for i in range(len(ellipses)):
-			args = {key:ellipses[i][key] for key in ['mean', 'std']}
-			X_train_temp = [dgm[:,1] for dgm in X_train_0]
-			X_train_features_0[:,i] = feature(X_train_temp, f_gaussian, **args)
 
+		X_train_temp = [dgm[:,1] for dgm in X_train_0]
+		X_train_features_0 = get_all_features(X_train_temp, ellipses, f_gaussian)
 
-		X_test_features_0 = np.zeros((len(X_test_0), len(ellipses)))
-		for i in range(len(ellipses)):
-			args = {key:ellipses[i][key] for key in ['mean', 'std']}
-			X_test_temp = [dgm[:,1] for dgm in X_test_0]
-
-			X_test_features_0[:,i] = feature(X_test_temp, f_gaussian, **args)
+		X_test_temp = [dgm[:,1] for dgm in X_test_0]
+		X_test_features_0 = get_all_features(X_test_temp, ellipses, f_gaussian)
 
 		t1 = time.time()
 		print('Features H_0:{}'.format(t1-t0))
@@ -285,21 +284,11 @@ for i in range(1,11):
 		# ------------------------------ Features ------------------------------------
 		# ----------------------------------------------------------------------------
 		t0 = time.time()
-		X_train_features_1 = np.zeros((len(X_train_1), len(ellipses)))
-		for i in range(len(ellipses)):
-			args = {key:ellipses[i][key] for key in ['mean', 'std', 'rotation']}
-			args['center'] = args.pop('mean')
-			args['axis'] = args.pop('std')
+		
+		X_train_features_1 = get_all_features(X_train_1, ellipses, f_ellipse)
 
-			X_train_features_1[:,i] = feature(X_train_1, f_ellipse, **args)
+		X_test_features_1 = get_all_features(X_test_1, ellipses, f_ellipse)
 
-		X_test_features_1 = np.zeros((len(X_test_1), len(ellipses)))
-		for i in range(len(ellipses)):
-			args = {key:ellipses[i][key] for key in ['mean', 'std', 'rotation']}
-			args['center'] = args.pop('mean')
-			args['axis'] = args.pop('std')
-
-			X_test_features_1[:,i] = feature(X_test_1, f_ellipse, **args)
 		t1 = time.time()
 		print('Features H_1:{}'.format(t1-t0))
 

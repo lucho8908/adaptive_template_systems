@@ -26,7 +26,9 @@ np.set_printoptions(precision=2)
 sys.path.append('../..')
 from ATS import *
 
+# -----------------------------------------------------------------------------
 # ------------------------------ IMPORT DATA ----------------------------------
+# -----------------------------------------------------------------------------
 
 num_dgms = int(sys.argv[1])
 
@@ -65,12 +67,16 @@ for n in range(5):
 
 	F = F_labels.tolist()
 
+	# -----------------------------------------------------------------------------
 	# ------------------------------ H_0 ------------------------------------------
+	# -----------------------------------------------------------------------------
 
 	X_train, X_test, F_train, F_test = train_test_split(X_dgm0, F, test_size=0.33, random_state=10)
 
-	# ------------------------------ GMM -----------------------------------------
-
+	# -----------------------------------------------------------------------------
+	# ------------------------------ GMM ------------------------------------------
+	# -----------------------------------------------------------------------------
+	
 	print('Begin GMM...')
 	t0 = time.time()
 	X_train_temp = np.vstack(X_train)
@@ -98,31 +104,30 @@ for n in range(5):
 	t1 = time.time()
 	print('Finish GMM. Time: {}'.format(t1-t0))
 
-	# ------------------------------ GMM features --------------------------------
+	# -----------------------------------------------------------------------------
+	# ------------------------------ GMM features ---------------------------------
+	# -----------------------------------------------------------------------------
 	t0 = time.time()
-	X_train_features_0 = np.zeros((len(X_train), len(ellipses)))
-	for i in range(len(ellipses)):
-		args = {key:ellipses[i][key] for key in ['mean', 'std']}
-		X_train_temp = [dgm[:,1] for dgm in X_train]
-		X_train_features_0[:,i] = feature(X_train_temp, f_gaussian, **args)
-	
-	print(X_train_features_0.shape)
 
-	X_test_features_0 = np.zeros((len(X_test), len(ellipses)))
-	for i in range(len(ellipses)):
-		args = {key:ellipses[i][key] for key in ['mean', 'std']}
-		X_test_temp = [dgm[:,1] for dgm in X_test]
+	X_train_temp = [dgm[:,1] for dgm in X_train]
+	X_train_features_0 = get_all_features(X_train_temp, ellipses, f_gaussian)
 
-		X_test_features_0[:,i] = feature(X_test_temp, f_gaussian, **args)
+	X_test_temp = [dgm[:,1] for dgm in X_test]
+	X_test_features_0 = get_all_features(X_test_temp, ellipses, f_gaussian)
 
 	t1 = time.time()
 	print('Features H_0:{}'.format(t1-t0))
 
+	# -----------------------------------------------------------------------------
 	# ------------------------------ H_1 ------------------------------------------
+	# -----------------------------------------------------------------------------
 
 	X_train, X_test, F_train, F_test = train_test_split(X_dgm1, F, test_size=0.33, random_state=10)
 	
-	# ------------------------------ GMM -----------------------------------------
+	# -----------------------------------------------------------------------------
+	# ------------------------------ CDER -----------------------------------------
+	# -----------------------------------------------------------------------------
+
 	print('Begin GMM...')
 	t0 = time.time()
 	X_train_temp = np.vstack(X_train)
@@ -160,38 +165,30 @@ for n in range(5):
 	plt.savefig('gmm_images/{}_h1_cder_n_{}.png'.format(n, num_dgms))
 	plt.close()
 
+	# -----------------------------------------------------------------------------
 	# ------------------------------ CDER features --------------------------------
-	t0 = time.time()
-	X_train_features_1 = np.zeros((len(X_train), len(ellipses)))
-	for i in range(len(ellipses)):
-		args = {key:ellipses[i][key] for key in ['mean', 'std', 'rotation']}
-		args['center'] = args.pop('mean')
-		args['axis'] = args.pop('std')
+	# -----------------------------------------------------------------------------
 
-		X_train_features_1[:,i] = feature(X_train, f_ellipse, **args)
+	X_train_features_1 = get_all_features(X_train, ellipses, f_ellipse)
 
-	X_test_features_1 = np.zeros((len(X_test), len(ellipses)))
-	for i in range(len(ellipses)):
-		args = {key:ellipses[i][key] for key in ['mean', 'std', 'rotation']}
-		args['center'] = args.pop('mean')
-		args['axis'] = args.pop('std')
+	X_test_features_1 = get_all_features(X_test, ellipses, f_ellipse)
 
-		X_test_features_1[:,i] = feature(X_test, f_ellipse, **args)
-	t1 = time.time()
-	print('Features H_1:{}'.format(t1-t0))
+	# -----------------------------------------------------------------------------
 	# ------------------------------ Ridge Classification  ------------------------
+	# -----------------------------------------------------------------------------
+
 	t0 = time.time()
 	X_train_features = np.column_stack((X_train_features_0, X_train_features_1))
-	print(X_train_features.shape)
+
 	X_test_features = np.column_stack((X_test_features_0, X_test_features_1))
 
 	ridge_model = RidgeClassifier().fit(X_train_features, F_train)
+
 	score_train.append(ridge_model.score(X_train_features, F_train))
 	score_test.append(ridge_model.score(X_test_features, F_test))
 	t1 = time.time()
 
-	print('train', score_train[-1])
-	print('test', score_test[-1])
 	print('Ridge Classification: {}'.format(t1-t0))
+
 print(np.mean(score_train), np.std(score_train))
 print(np.mean(score_test), np.std(score_test))

@@ -350,7 +350,7 @@ z = r * sin(theta)</p>
 
 <dl class="function">
 <dt id="ATS.f_gaussian">
-<code class="descclassname">ATS.</code><code class="descname">f_gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>mean</em>, <em>std</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#f_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.f_gaussian" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ATS.</code><code class="descname">f_gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>center=0</em>, <em>axis=1</em>, <em>rotation=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#f_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.f_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes</p>
 <div class="math notranslate nohighlight">
 \[g(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{- \left( \frac{x-\mu}{\sqrt{2}\sigma} \right)^2}\]</div>
@@ -358,8 +358,8 @@ z = r * sin(theta)</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>numpy array</em>) – point to evaluate <span class="math notranslate nohighlight">\(g\)</span> at</p></li>
-<li><p><strong>mean</strong> (<em>float</em>) – center of the gaussian</p></li>
-<li><p><strong>std</strong> (<em>float</em>) – standard deviation</p></li>
+<li><p><strong>center</strong> (<em>float</em>) – mean of the gaussian</p></li>
+<li><p><strong>axis</strong> (<em>float</em>) – standard deviation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -382,6 +382,21 @@ z = r * sin(theta)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Numpy array – Array of values <span class="math notranslate nohighlight">\(\nu_{D}(f)\)</span> for each diagram <span class="math notranslate nohighlight">\(D\)</span> in the collection <cite>list_dgms</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ATS.get_all_features">
+<code class="descclassname">ATS.</code><code class="descname">get_all_features</code><span class="sig-paren">(</span><em>list_dgms</em>, <em>list_ellipses</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ATS.html#get_all_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ATS.get_all_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes all the features for a colelction of persistent diagrams given a list ot ellipses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_dgms</strong> (<em>list</em>) – list of persistent diagrams</p></li>
+<li><p><strong>list_ellipses</strong> (<em>list</em>) – List of dicctionaries. Each dicctionary represents a ellipse. It must have the following keys: <cite>mean</cite>, <cite>std</cite> and <cite>rotation</cite>.</p></li>
+<li><p><strong>function</strong> (<em>function</em>) – Compactly supported function in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

@@ -629,7 +629,7 @@
 
 	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">temp</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="f_gaussian"><a class="viewcode-back" href="../ATS.html#ATS.f_gaussian">[docs]</a><span class="k">def</span> <span class="nf">f_gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
+<div class="viewcode-block" id="f_gaussian"><a class="viewcode-back" href="../ATS.html#ATS.f_gaussian">[docs]</a><span class="k">def</span> <span class="nf">f_gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">	Computes</span>
 
@@ -639,16 +639,16 @@
 <span class="sd">	:param x: point to evaluate :math:`g` at</span>
 <span class="sd">	:type x: numpy array</span>
 
-<span class="sd">	:param mean: center of the gaussian</span>
-<span class="sd">	:type mean: float</span>
+<span class="sd">	:param center: mean of the gaussian</span>
+<span class="sd">	:type center: float</span>
 
-<span class="sd">	:param std: standard deviation</span>
-<span class="sd">	:type std: float</span>
+<span class="sd">	:param axis: standard deviation</span>
+<span class="sd">	:type axis: float</span>
 
 <span class="sd">	:return: numpy array -- :math:`g(x)`.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
-	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">mean</span><span class="p">)</span><span class="o">/</span><span class="n">std</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">std</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span></div>
+	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">center</span><span class="p">)</span><span class="o">/</span><span class="n">axis</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">axis</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span></div>
 
 <span class="c1">#@jit(parallel=True)</span>
 <div class="viewcode-block" id="f_dgm"><a class="viewcode-back" href="../ATS.html#ATS.f_dgm">[docs]</a><span class="k">def</span> <span class="nf">f_dgm</span><span class="p">(</span><span class="n">dgm</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">keyargs</span><span class="p">):</span>
@@ -697,6 +697,29 @@
 		<span class="n">feat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_dgm</span><span class="p">(</span><span class="n">list_dgms</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">keyargs</span><span class="p">)</span>
 
 	<span class="k">return</span> <span class="n">feat</span></div>
+
+<div class="viewcode-block" id="get_all_features"><a class="viewcode-back" href="../ATS.html#ATS.get_all_features">[docs]</a><span class="k">def</span> <span class="nf">get_all_features</span><span class="p">(</span><span class="n">list_dgms</span><span class="p">,</span> <span class="n">list_ellipses</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function computes all the features for a colelction of persistent diagrams given a list ot ellipses.</span>
+
+<span class="sd">	:param list_dgms: list of persistent diagrams</span>
+<span class="sd">	:type list_dgms: list</span>
+
+<span class="sd">	:param list_ellipses: List of dicctionaries. Each dicctionary represents a ellipse. It must have the following keys: `mean`, `std` and `rotation`.</span>
+<span class="sd">	:type list_ellipses: list</span>
+
+<span class="sd">	:param function: Compactly supported function in :math:`\mathbb{R}^2`.</span>
+<span class="sd">	:type function: function</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">list_dgms</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_ellipses</span><span class="p">)))</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_ellipses</span><span class="p">)):</span>
+		<span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">list_ellipses</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;rotation&#39;</span><span class="p">]}</span>
+		<span class="n">args</span><span class="p">[</span><span class="s1">&#39;center&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+		<span class="n">args</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;std&#39;</span><span class="p">)</span>
+
+		<span class="n">features</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature</span><span class="p">(</span><span class="n">list_dgms</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">features</span></div>
 </pre></div>
 
            </div>

@@ -1,5 +1,7 @@
 # Adaptive Template Systems
 
+This repository implements the tools developed in the paper [Approximating Continuous Functions on Persistence Diagrams Using Template Functions](https://arxiv.org/abs/1902.07190)
+
 ## Requirments:
 * Python/3.3. or higher
 * GNU/4.7.1 or higher to run RIPSER

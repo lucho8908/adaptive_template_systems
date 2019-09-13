@@ -485,7 +485,7 @@ def f_ellipse (x, center=np.array([0,0]), axis=np.array([1,1]), rotation=np.arra
 
 	return np.maximum(0, 1-temp)
 
-def f_gaussian(x, mean, std):
+def f_gaussian(x, center=0, axis=1, rotation=1):
 	'''
 	Computes
 
@@ -495,16 +495,16 @@ def f_gaussian(x, mean, std):
 	:param x: point to evaluate :math:`g` at
 	:type x: numpy array
 
-	:param mean: center of the gaussian
-	:type mean: float
+	:param center: mean of the gaussian
+	:type center: float
 
-	:param std: standard deviation
-	:type std: float
+	:param axis: standard deviation
+	:type axis: float
 
 	:return: numpy array -- :math:`g(x)`.
 	'''
 
-	return np.exp((-0.5)*np.power((x-mean)/std, 2)) / (std*np.sqrt(2*np.pi))
+	return np.exp((-0.5)*np.power((x-center)/axis, 2)) / (axis*np.sqrt(2*np.pi))
 
 #@jit(parallel=True)
 def f_dgm(dgm, function, **keyargs):
@@ -553,3 +553,28 @@ def feature(list_dgms, function, **keyargs):
 		feat[i] = f_dgm(list_dgms[i], function, **keyargs)
 
 	return feat
+
+def get_all_features(list_dgms, list_ellipses, function):
+	'''
+	This function computes all the features for a colelction of persistent diagrams given a list ot ellipses.
+
+	:param list_dgms: list of persistent diagrams
+	:type list_dgms: list
+
+	:param list_ellipses: List of dicctionaries. Each dicctionary represents a ellipse. It must have the following keys: `mean`, `std` and `rotation`.
+	:type list_ellipses: list
+
+	:param function: Compactly supported function in :math:`\mathbb{R}^2`.
+	:type function: function
+
+	:return: Numpy array -- 
+	'''
+	features = np.zeros((len(list_dgms), len(list_ellipses)))
+	for i in range(len(list_ellipses)):
+		args = {key:list_ellipses[i][key] for key in ['mean', 'std', 'rotation']}
+		args['center'] = args.pop('mean')
+		args['axis'] = args.pop('std')
+
+		features[:,i] = feature(list_dgms, function, **args)
+
+	return features
