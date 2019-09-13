@@ -53,4 +53,4 @@ This repository implements the tools developed in the paper [Approximating Conti
 
 ## Running and Examples
 
-In the folder `Examples` 
+In the folder `Examples` are 3 different examples available: 6-class manifold classification problem, shape classification from the SHREC 2014 data set and protein classification problem from the SCOPe data base.
