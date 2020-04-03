@@ -25,7 +25,7 @@ This repository implements the tools developed in the paper [Approximating Conti
 - Install GDA Toolbox: First you need to clone the following repository https://github.com/geomdata/gda-public/
 
 	~~~	 
-	cd ~ #Any folder different to the one where gda-public was clones!
+	cd ~ #Any folder different to the one where gda-public was cloned!
 	conda create --name gda_env --file /path_of_cloned_repo/gda-public/requirements.txt python=3
 	source activate gda_env
 	pip install /path_of_cloned_repo/gda-public
