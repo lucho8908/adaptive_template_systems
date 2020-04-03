@@ -1,5 +1,7 @@
 # Adaptive Template Systems
 
+by [Luis Polanco Contreras](https://www.egr.msu.edu/~polanco2/) and [Jose A. Perea](https://www.joperea.com/)
+
 This repository implements the tools developed in the paper [Approximating Continuous Functions on Persistence Diagrams Using Template Functions](https://arxiv.org/abs/1902.07190). The main goal of this package is to provide a tool that extract features fro persistent diagrams in an adaptive manner.
 
 ## Requirments:
