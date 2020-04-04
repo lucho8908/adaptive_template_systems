@@ -19,11 +19,10 @@ import multidim
 import itertools
 import os
 import hdbscan
-import teaspoon
 import sys
 import pandas as pd
 
-from teaspoon.MakeData import PointCloud
+from scipy import interpolate
 from copy import deepcopy
 from matplotlib.patches import Ellipse
 from ripser import ripser
@@ -38,7 +37,7 @@ from multidim.models import CDER
 
 import matplotlib.pyplot as plt
 
-np.set_printoptions(precision=2)
+# np.set_printoptions(precision=2)
 
 
 def Circle(N = 100, r=1, gamma=None, seed = None):
@@ -406,11 +405,13 @@ def limits_box(list_dgms):
 	maxs = -np.inf*np.ones(2)
 
 	for dgm in list_dgms_temp:
-		dgm[:,1] = dgm[:,1]-dgm[:,0] # Turns the birth-death into birth-lifespan
+		# dgm[:,1] = dgm[:,1]-dgm[:,0] # Turns the birth-death into birth-lifespan
 		mins = np.minimum(np.amin(dgm, axis=0), mins)
 		maxs = np.maximum(np.amax(dgm, axis=0), maxs)
 
-	return mins, maxs
+	return mins-0.05, maxs+0.05
+
+	# return np.array([0,0]), np.array([1,1])
 
 def box_centers(list_dgms, d, padding):
 	'''
@@ -470,8 +471,27 @@ def f_box(x, center, delta):
 
 	'''
 	x = deepcopy(x)
-	x[1] = x[1] - x[0] # Change death to lifespan.
-	return max(0, 1 - (1/delta)*max(abs(x[0] - center[0]), abs(x[1] - center[1])))
+	
+	x[:,1] = x[:,1] - x[:,0] # Change death to lifespan.
+	
+	temp = np.maximum(0, 1 - (1/delta)*np.maximum(np.abs(x[:,0] - center[0]), np.abs(x[:,1] - center[1])))
+	
+	return temp
+
+def f_interpolation(x, centers, z):
+	new_xs = x[:,0]
+
+	new_ys = x[:,1]
+
+	xs = np.unique(centers[:,0])
+
+	ys = np.unique(centers[:,1])
+	
+	f = interpolate.interp2d(xs, ys, z, kind='cubic')
+
+	new_z = np.diag(f(new_xs, new_ys))
+
+	return new_z
 
 def f_ellipse (x, center=np.array([0,0]), axis=np.array([1,1]), rotation=np.array([[1,0],[0,1]])):
 	'''
@@ -508,6 +528,11 @@ def f_gaussian(x, center=0, axis=1, rotation=1):
 	.. math::
 		g(x) = \\frac{1}{\sigma \sqrt{2\pi}} e^{- \\left( \\frac{x-\mu}{\sqrt{2}\sigma} \\right)^2}
 	
+	or 
+
+	..math::
+		g(x) = \\frac{1}{\vert\Sigma\vert \sqrt{2\pi}^2} e^{-0.5 (x-\mu)^{T}\Sigma^{-1}(x-\mu)}
+
 	:param x: point to evaluate :math:`g` at
 	:type x: numpy array
 
@@ -519,8 +544,62 @@ def f_gaussian(x, center=0, axis=1, rotation=1):
 
 	:return: numpy array -- :math:`g(x)`.
 	'''
+	sigma_inverse = np.transpose(rotation)@np.diag(np.power(axis, -1))@rotation
 
-	return np.exp((-0.5)*np.power((x-center)/axis, 2)) / (axis*np.sqrt(2*np.pi))
+	det_sigma = np.absolute(np.linalg.det(np.transpose(rotation)@np.diag(np.power(axis, 1))@rotation))
+	
+	centered_x = np.subtract(x, center)
+
+	if centered_x.ndim==1:
+		centered_x = np.reshape(centered_x, (-1,1))
+
+	exponent = (-0.5)*np.diag(centered_x@sigma_inverse@np.transpose(centered_x))
+
+	result = np.exp(exponent) / np.sqrt(det_sigma*(2*np.pi)**2)
+	
+	# CAUTION: Here we are weighting the value of f(x) by its persistence
+	if x.ndim == 2:
+		point_persistence = np.exp(x[:,1])**0.5
+		result = np.multiply(point_persistence, result)
+		
+	return result
+
+def f_gaussian_truncated(x, center=0, axis=1, rotation=1):
+	'''
+	Computes
+
+	.. math::
+		g(x) = \\frac{1}{\sigma \sqrt{2\pi}} e^{- \\left( \\frac{x-\mu}{\sqrt{2}\sigma} \\right)^2}
+	
+	or 
+
+	..math::
+		g(x) = \\frac{1}{\vert\Sigma\vert \sqrt{2\pi}^2} e^{-0.5 (x-\mu)^{T}\Sigma^{-1}(x-\mu)}
+
+	:param x: point to evaluate :math:`g` at
+	:type x: numpy array
+
+	:param center: mean of the gaussian
+	:type center: float
+
+	:param axis: standard deviation
+	:type axis: float
+
+	:return: numpy array -- :math:`g(x)`.
+	'''
+	sigma_inverse = np.transpose(rotation)@np.diag(np.power(axis, -1))@rotation
+
+	det_sigma = np.absolute(np.linalg.det(np.transpose(rotation)@np.diag(np.power(axis, 1))@rotation))
+	
+	centered_x = np.subtract(x, center)
+
+	exponent = (-0.5)*np.diag(centered_x@sigma_inverse@np.transpose(centered_x))
+
+	result = np.exp(exponent) / np.sqrt(det_sigma*(2*np.pi)**2)
+
+	result[np.logical_or( np.abs(centered_x[:,0])>axis[0] , np.abs(centered_x[:,1])>axis[1] )] = 0
+
+	return result
 
 #@jit(parallel=True)
 def f_dgm(dgm, function, **keyargs):
@@ -594,3 +673,290 @@ def get_all_features(list_dgms, list_ellipses, function):
 		features[:,i] = feature(list_dgms, function, **args)
 
 	return features
+
+def get_all_features_gaussians(list_dgms, d):
+	centers, step = box_centers(list_dgms, d, 0.05)
+	
+	features = np.zeros((len(list_dgms), len(centers)))
+	for i in range(len(centers)):
+		args = {'center':centers[i], 'axis':np.array([step, step]), 'rotation':np.identity(2)}
+		features[:,i] = feature(list_dgms, f_gaussian, **args)
+
+	return features
+
+def get_all_features_gaussians_1D(list_dgms, d):
+	centers, step = box_centers(list_dgms, d, 0.05)
+
+	centers = np.unique(centers[:,1])
+
+	features = np.zeros((len(list_dgms), len(centers)))
+	for i in range(len(centers)):
+		args = {'center':centers[i], 'axis':np.array([step]), 'rotation':np.identity(1)}
+		features[:,i] = feature(list_dgms, f_gaussian, **args)
+
+	return features
+
+def get_all_features_interpolation(list_dgms, d, function):
+
+	centers = box_centers(list_dgms, d, 0.05)[0]
+
+	z = np.zeros(len(centers))
+	
+	features = np.zeros((len(list_dgms), len(centers)))
+	for i in range(len(centers)):
+		z[i] = 1
+		args = {'centers':centers, 'z':z.reshape((d-1,d-1))}
+
+		features[:,i] = feature(list_dgms, function, **args)
+
+	return features
+
+def get_all_features_boxes(list_dgms, centers, delta):
+
+	features = np.zeros((len(list_dgms), len(centers)))
+	for i in range(len(centers)):
+		args = {'center':centers[i], 'delta':delta}
+
+		features[:,i] = feature(list_dgms, f_box, **args)
+
+	return features
+
+def get_all_features_chebi(list_dgms, d):
+
+	features = []
+	for dgm in list_dgms:
+		features.append(interp_polynomial(dgm, d))
+	
+	return np.array(features)
+		
+
+#------------------------------------------------------------------------------
+
+# find the quadrature/interpolation weights for common orthognal functions
+# define the function blocks
+# Chebyshev-Gauss points of the first kind
+def quad_cheb1(npts=10):
+    # get the Chebyshev nodes of the first kind
+    x = np.cos(np.pi * np.arange(0, npts + 1) / npts)
+
+    # get the corresponding quadrature weights
+    w = np.pi / (1 + np.repeat(npts, npts + 1))
+
+    return x, w
+
+
+# Computes the Legendre-Gauss-Lobatto nodes, and their quadrate weights.
+# The LGL nodes are the zeros of (1-x**2)*P'_N(x), wher P_N is the nth Legendre
+# polynomial
+def quad_legendre(npts=10):
+    # Truncation + 1
+    nptsPlusOne = npts + 1
+    eps = np.spacing(1)  # find epsilon, the machine precision
+
+    # Use the Chebyshev-Gauss-Lobatto nodes as the first guess
+    x = np.cos(np.pi * np.arange(0, npts + 1) / npts)
+
+    # Get the Legendre Vandermonde Matrix
+    P = np.zeros((nptsPlusOne, nptsPlusOne))
+
+    # Compute P_(N) using the recursion relation
+    # Compute its first and second derivatives and
+    # update x using the Newton-Raphson method.
+
+    xold = 2
+
+    while np.max(np.abs(x - xold)) > eps:
+        xold = x
+
+        P[:, 0] = 1
+        P[:, 1] = x
+
+        for k in range(1, npts):
+            P[:, k + 1] = ((2 * k + 1) * x * P[:, k] - k * P[:, k - 1]) / (k + 1)
+
+        x = xold - (x * P[:, npts] - P[:, npts - 1]) \
+            / (nptsPlusOne * P[:, npts])
+
+    # get the corresponding quadrature weights
+    w = 2 / (npts * nptsPlusOne * P[:, npts] ** 2)
+
+    return x, w
+
+
+# map the inputs to the function blocks
+# you can invoke the desired function block using:
+# quad_pts_and_weights['name_of_function'](npts)
+quad_pts_and_weights = {'cheb1': quad_cheb1,
+                        'legendre': quad_legendre
+                        }
+
+
+# find the barycentric interplation weights
+def bary_weights(x):
+    # Calculate Barycentric weights for the base points x.
+    #
+    # Note: this algorithm may be numerically unstable for high degree
+    # polynomials (e.g. 15+). If using linear or Chebyshev spacing of base
+    # points then explicit formulae should then be used. See Berrut and
+    # Trefethen, SIAM Review, 2004.
+
+    # find the length of x
+    n = x.size
+
+    # Rescale for numerical stability
+    eps = np.spacing(1)  # find epsilon, the machine precision
+    x = x * (1 / np.prod(x[x > -1 + eps] + 1)) ** (1 / n)
+
+    # find the weights
+    w = np.zeros((1, n))
+    for i in np.arange(n):
+        w[0, i] = np.prod(x[i] - np.delete(x, i))
+
+    return 1 / w
+
+
+def bary_diff_matrix(xnew, xbase, w=None):
+    # Calculate both the derivative and plain Lagrange interpolation matrix
+    # using Barycentric formulae from Berrut and Trefethen, SIAM Review, 2004.
+    # xnew     Interpolation points
+
+    # xbase    Base points for interpolation
+    # w        Weights calculated for base points (optional)
+
+    # if w is not set, set it
+    if w is None:
+        w = bary_weights(xbase)
+
+    # get the length of the base points
+    n = xbase.size
+
+    # get the length of the requested points
+    nn = xnew.size
+
+    # replicate the weights vector into a matrix
+    wex = np.tile(w, (nn, 1))
+
+    # Barycentric Lagrange interpolation (from Berrut and Trefethen, SIAM Review, 2004)
+    xdiff = np.tile(xnew[np.newaxis].T, (1, n)) - np.tile(xbase, (nn, 1))
+
+    M = wex / xdiff
+
+    divisor = np.tile(np.sum(M, axis=1)[np.newaxis].T, (1, n))
+    divisor[np.isinf(divisor)] = np.inf
+
+    M[np.isinf(M)] = np.inf
+
+    M = M / divisor
+
+    #	M[np.isnan(M)] = 0
+
+    M[xdiff == 0] = 1
+
+    #	# Construct the derivative (Section 9.3 of Berrut and Trefethen)
+    #	xdiff2 = xdiff ** 2
+    #
+    #	frac1 = wex / xdiff
+    #	frac1[np.isinf(frac1)] = float("inf")
+    #
+    #	frac2 = wex / xdiff2
+    #
+    #	DM = (M * np.tile(np.sum(frac2, axis=1)[np.newaxis].T, (1, n)) - frac2) / np.tile(np.sum(frac1, axis=1)[np.newaxis].T, (1, n))
+    #	row, col = np.where(xdiff == 0)
+    #
+    #
+    #	if np.all(row == 0):  # or, row.size == 0:
+    #		DM[row, ] = (wex[row, ] / np.tile(w[col].T, (1, n))) / xdiff[row, ]
+    #		idx = sub2ind(DM.shape, row, col)
+    #		DM[idx] = 0
+    #		DM[idx] = -np.sum(DM[row, ], axis=1)
+    return M
+
+
+## Extracts the weights on the interpolation mesh using barycentric Lagrange interpolation.
+# @param Dgm
+# 	A persistence diagram, given as a $K \times 2$ numpy array
+# @param params
+# 	An tents.ParameterBucket object.  Really, we need d, delta, and epsilon from that.
+# @param type
+#	This code accepts diagrams either
+#	* in (birth, death) coordinates, in which case `type = 'BirthDeath'`, or
+#	* in (birth, lifetime) = (birth, death-birth) coordinates, in which case `dgm_type = 'BirthLifetime'`
+# @return interp_weight, which is a matrix with each entry representiting the weight of an interpolation
+#	function on the base mesh. This matrix assumes that on a 2D mesh the functions are ordered row-wise.
+def interp_polynomial(Dgm, d):
+
+    nx = d
+    ny = d
+
+    # get the number of query points
+    num_query_pts = Dgm.shape[0]
+
+    # check if the Dgm is empty. If it is, pass back zeros
+    if Dgm.size == 0:
+        yy = np.zeros((nx + 1) * (ny + 1))
+        return yy
+
+    A = Dgm
+
+    # get the query points. xq are the brith times, yq are the death times.
+    xq, yq = np.sort(A[:, 0]), np.sort(A[:, 1])
+
+    # 1) Get the base nodes:
+    # get the 1D base nodes in x and y
+
+    xmesh, w = quad_cheb1(nx)
+    ymesh, w = quad_cheb1(ny)
+    xmesh = np.sort(xmesh)
+    ymesh = np.sort(ymesh)
+    
+    minimums, maximums = limits_box([A])
+
+    # shift the base mesh points to the interval of interpolation [ax, bx], and
+    # [ay, by]
+    # ax, bx = params.boundingBox['birthAxis']
+    # ax = 5
+    # bx = 6
+    xmesh = (maximums[0] - minimums[0]) / 2 * xmesh + (maximums[0] - minimums[0]) / 2
+    
+    # ay, by = params.boundingBox['lifetimeAxis']
+    # ay = 5
+    # by = 6
+    ymesh = (maximums[1] - minimums[1]) / 2 * ymesh + (maximums[1] - minimums[1]) / 2
+
+    # define a mesh on the base points
+    x_base, y_base = np.meshgrid(xmesh, ymesh, sparse=False, indexing='ij')
+
+    # get the x and y interpolation matrices
+    # get the 1D interpolation matrix for x
+    x_interp_mat = bary_diff_matrix(xnew=xq, xbase=xmesh)
+    x_interp_mat = x_interp_mat.T  # transpose the x-interplation matrix
+
+    # get the 1D interpolation matrix for y
+    y_interp_mat = bary_diff_matrix(xnew=yq, xbase=ymesh)
+
+    # replicate each column in the x-interpolation matrix n times
+    Gamma = np.repeat(x_interp_mat, ny + 1, axis=1)
+
+    # unravel, then replicate each row in the y-interpolation matrix m times
+    y_interp_mat.shape = (1, y_interp_mat.size)
+    Phi = np.repeat(y_interp_mat, nx + 1, axis=0)
+
+    # element-wise multiply Gamma and Phi
+    Psi = Gamma * Phi
+
+    # split column-wise, then concatenate row-wise
+    #    if Psi.size > 0:  # check that Psi is not empty
+    Psi = np.concatenate(np.split(Psi, num_query_pts, axis=1), axis=0)
+
+    # now reshape Psi so that each row corresponds to the weights of one query pt
+    Psi = np.reshape(Psi, (num_query_pts, -1))
+
+    # get the weights for each interpolation function/base-point
+    interp_weights = np.sum(np.abs(Psi), axis=0)
+
+    #    print('I ran the feature function!')
+    #    plt.figure(10)
+    #    plt.plot(np.abs(interp_weights),'x')
+    #    plt.show()
+
+    return np.abs(interp_weights)
