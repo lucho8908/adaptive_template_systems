@@ -1,0 +1,20 @@
+name: ats_env
+
+dependencies:
+  - python=3.6
+  - cython
+  - numpy
+  - pip
+  - pandas
+  - scipy
+  - matplotlib
+  - scikit-learn
+  - jupyter
+  - bokeh
+  - sphinx
+  - pip:
+    - ripser
+    - hdbscan
+    - theano
+    - keras
+    - numba
