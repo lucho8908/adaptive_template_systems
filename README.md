@@ -42,9 +42,8 @@ We are gonna create an isolated enviroment to work, to do so you need the file `
 	~~~
 	
 6. Let us verify our instalation:
-	
-	a. Open a python worksheet by typing: ```ipython``` os ```python```
-	b. type: ```import multidim, ripser```
+	1. Open a python worksheet by typing: ```ipython``` os ```python```
+	2. type: ```import multidim, ripser```
 	
 
 ## Running and Examples
