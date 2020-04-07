@@ -32,7 +32,7 @@ We are gonna create an isolated enviroment to work, to do so you need the file `
 	source activate ats_env
 	~~~
 	
-3. Clone the following repository: (GDA Toolbax)[https://github.com/geomdata/gda-public/]
+3. Clone the following repository: [GDA Toolbax]9https://github.com/geomdata/gda-public/)
 
 4. cd ~ #Any folder different to the one where gda-public was cloned!
 
