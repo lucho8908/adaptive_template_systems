@@ -16,42 +16,36 @@ This repository implements the tools developed in the paper [Approximating Conti
 
 ## Before running:
 
-- Install Ripser
-	~~~
-	pip install Cython
-	pip install Ripser
-	~~~
+We are gonna create an isolated enviroment to work, to do so you need the file ```environment.yml``` in this repository.
 
-- Install GDA Toolbox: First you need to clone the following repository https://github.com/geomdata/gda-public/
+1.  Lets create a new enviroment
+	~~~
+	conda env create -f environment.yml
+	~~~
+	
+2. Lets activate the enviroment
+	~~~
+	conda activate ats_env
+	~~~
+	or 
+	~~~
+	source activate ats_env
+	~~~
+	
+3. Clone the following repository: (GDA Toolbax)[https://github.com/geomdata/gda-public/]
 
-	~~~	 
-	cd ~ #Any folder different to the one where gda-public was cloned!
-	conda create --name gda_env --file /path_of_cloned_repo/gda-public/requirements.txt python=3
-	source activate gda_env
+4. cd ~ #Any folder different to the one where gda-public was cloned!
+
+5. Execute 
+	~~~
 	pip install /path_of_cloned_repo/gda-public
 	~~~
-
-	To verify the installation, open a python worksheet and do
-	~~~
-	import multidim
-	~~~
-
-	If the previous steps where previously executed, the next time you only need to run
-	~~~
-	source activate gda_env
-	~~~
-
-- Install Keras+Theano:
-	~~~
-	pip install theano
-	pip install keras
-	~~~
-
-- Install numba and hdbscan
-	~~~
-	conda install -y -c conda-forge hdbscan
-	pip install numba
-	~~~
+	
+6. Let us verify our instalation:
+	
+	a. Open a python worksheet by typing: ```ipython``` os ```python```
+	b. type: ```import multidim, ripser```
+	
 
 ## Running and Examples
 
