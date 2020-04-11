@@ -12,6 +12,7 @@ dependencies:
   - jupyter
   - bokeh
   - sphinx
+  - tqdm
   - pip:
     - ripser
     - hdbscan
