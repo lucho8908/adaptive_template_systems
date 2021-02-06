@@ -388,6 +388,81 @@ def testSetManifolds(numDgms = 50, numPts = 300, permute = True, seed = None):
 
 	return DgmsDF
 
+def mod_testSetManifolds(numDgms = 50, numPts = 300, permute = True, seed = None):
+    '''
+    This function generates persisten diaglams from point clouds generated from the following collection of manifolds
+
+        - Torus
+        - Annulus
+        - Cube
+        - 3 clusters
+        - 3 clusters of 3 clusters
+        - Sphere
+
+    The diagrmas are obtained by computing persistent homology (using Ripser) of sampled point clouds from the described manifolds.
+
+    :param numDgms: Number of diagrmas per manifold
+    :type numDgms: int
+
+    :param numPts: Number of point per sampled point cloud
+    :type numPts: int
+
+    :param permute: If True it will permute the final result, so that diagrams of point clouds sampled from the samw manifold are not contiguous.
+    :type permute: bool
+
+    :param seed: Fixes the random seed.
+    :type seed: float
+
+    :return: pandas data frame -- Each row corersponds to the 0- and 1-dimensional persistent homology of a point cloud sampled from one of the 6 manifolds.
+    '''
+
+    columns = ['Dgm0', 'Dgm1', 'trainingLabel']
+    index = range(3*numDgms)
+    DgmsDF = pd.DataFrame(columns = columns, index = index)
+
+    counter = 0
+
+    if type(seed) == int:
+        fixSeed = True
+    else:
+        fixSeed = False
+
+    #-
+    print('Generating torus clouds...')
+    for i in range(numDgms):
+        if fixSeed:
+            seed += 1
+        dgmOut = ripser(Torus(N=numPts,seed = seed))['dgms']
+        DgmsDF.loc[counter] = [dgmOut[0],dgmOut[1], 'Torus']
+        counter +=1
+
+    #-
+    print('Generating annuli clouds...')
+    for i in range(numDgms):
+        if fixSeed:
+            seed += 1
+        dgmOut = ripser(Annulus(N=numPts,seed = seed))['dgms']
+        DgmsDF.loc[counter] = [dgmOut[0],dgmOut[1], 'Annulus']
+        counter +=1
+
+    #-
+    print('Generating sphere clouds...')
+
+    for i in range(numDgms):
+        if fixSeed:
+            seed += 1
+        dgmOut = ripser(Sphere(N = numPts, noise = .05,seed = seed))['dgms']
+        DgmsDF.loc[counter] = [dgmOut[0],dgmOut[1], 'Sphere']
+        counter +=1
+
+    print('Finished generating clouds and computing persistence.\n')
+
+    # Permute the diagrams if necessary.
+    if permute:
+        DgmsDF = DgmsDF.reindex(np.random.permutation(DgmsDF.index))
+
+    return DgmsDF
+
 # ------------------------------ My feature functions -------------------------
 
 def limits_box(list_dgms):

@@ -25,7 +25,7 @@ for file in os.listdir('./SCOP40mini/'):
             y = float(line[38:46])
             z = float(line[46:54])
                         
-            coordinates.append([x, y, x])
+            coordinates.append([x, y, z])
             
         
     coordinates = np.array(coordinates)
